@@ -1,0 +1,83 @@
+import pygame
+import random
+
+# 게임 설정
+WIDTH, HEIGHT = 300, 600
+BLOCK_SIZE = 30
+FPS = 10
+
+# 색상 정의
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+COLORS = [
+    (255, 0, 0), (0, 255, 0), (0, 0, 255), 
+    (255, 255, 0), (255, 165, 0), (75, 0, 130), (238, 130, 238)
+]
+
+# 테트리스 블록 클래스
+class TetrisBlock:
+    def __init__(self):
+        self.shape = random.choice([self.I, self.J, self.L, self.O, self.S, self.T, self.Z])
+        self.color = random.choice(COLORS)
+        self.x = WIDTH // BLOCK_SIZE // 2
+        self.y = 0
+
+    def I(self):
+        return [[1, 1, 1, 1]]
+
+    def J(self):
+        return [[0, 0, 1], [1, 1, 1]]
+
+    def L(self):
+        return [[1, 0, 0], [1, 1, 1]]
+
+    def O(self):
+        return [[1, 1], [1, 1]]
+
+    def S(self):
+        return [[0, 1, 1], [1, 1, 0]]
+
+    def T(self):
+        return [[0, 1, 0], [1, 1, 1]]
+
+    def Z(self):
+        return [[1, 1, 0], [0, 1, 1]]
+
+# 게임 초기화
+def init_game():
+    pygame.init()
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    pygame.display.set_caption("Tetris")
+    return screen
+
+# 블록 그리기
+def draw_block(screen, block):
+    for i, row in enumerate(block.shape):
+        for j, cell in enumerate(row):
+            if cell:
+                pygame.draw.rect(screen, block.color, 
+                                 (block.x * BLOCK_SIZE + j * BLOCK_SIZE, 
+                                  block.y * BLOCK_SIZE + i * BLOCK_SIZE, 
+                                  BLOCK_SIZE, BLOCK_SIZE))
+
+# 메인 게임 루프
+def main():
+    screen = init_game()
+    clock = pygame.time.Clock()
+    block = TetrisBlock()
+    running = True
+
+    while running:
+        screen.fill(BLACK)
+        draw_block(screen, block)
+        pygame.display.flip()
+        clock.tick(FPS)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+    pygame.quit()
+
+if __name__ == "__main__":
+    main()
